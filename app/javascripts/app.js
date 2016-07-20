@@ -69,9 +69,11 @@ function checkCertSync(id) {
 
   stuCerts.getCertificate(id).then(function(value) {
     loadingIndicator.hide();
+    notPresentIndicator.hide();
     syncIndicator.show();
   }).catch(function(e) {
     loadingIndicator.hide();
+    syncIndicator.hide();
     notPresentIndicator.show();
   });
 }
@@ -130,7 +132,7 @@ function watchBlockchainEvents() {
         var row = $('tr[data-cert-id=""][data-cert-first-name="' + result[0] + '"][data-cert-last-name="' + result[1] + '"][data-cert-training-title="' + result[2] + '"]');
         if(row.length >= 1) {
           row.attr('data-cert-id', certId);
-          console.log(row);
+          checkCertSync(certId);
           //TODO: AJAX call
         }
         else {
