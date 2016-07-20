@@ -1,22 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>MetaCoin - Default Truffle App</title>
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <title>Blockchain training certificates</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <link href="./app.css" rel='stylesheet' type='text/css'>
+
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
   <script src="./app.js"></script>
 </head>
 <body>
-  <h1>MetaCoin</h1>
-  <h2>Example Truffle Dapp</h2>
-  <h3>You have <span class="black"><span id="balance"></span> META</span></h3>
+  
 
-  <br>
-  <h1>Send</h1>
-  <br><label for="amount">Amount:</label><input type="text" id="amount" placeholder="e.g., 95"></input>
-  <br><label for="receiver">To Address:</label><input type="text" id="receiver" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"></input>
-  <br><br><button id="send" onclick="sendCoin()">Send MetaCoin</button>
-  <br><br>
-  <span id="status"></span>
+  <div class="container">
+
+    <div id="main-alert" class="alert alert-danger" role="alert" style="display:none"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> <span id="main-alert-message"></span></div>
+
+    <h1>
+      Blockchain training certificates
+    </h1>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>
+            #
+          </th>
+          <th>
+            Name
+          </th>
+          <th>
+            Training
+          </th>
+          <th>
+            Date
+          </th>
+          <th>
+            Blockchain status
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-cert-id="" data-cert-first-name="Nicolas" data-cert-last-name="Deschildre" data-cert-training-title="Formation Blockchain" data-cert-training-date="1469008976" data-cert-training-duration="3600">
+          <td>
+            231
+          </td>
+          <td>
+            Nicolas Deschildre
+          </td>
+          <td>
+            Formation Blockchain
+          </td>
+          <td>
+            28 Juin (2 jours)
+          </td>
+          <td>
+            <div class="loading">
+              <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Checking blockchain...
+            </div>
+            <div class="sync-blockchain" style="display:none">
+              <span class="text-success"><span class="glyphicon glyphicon-ok"></span></span> Synced in blockchain
+            </div>
+            <div class="not-in-blockchain" style="display:none">
+              <span class="text-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span> Not in blockchain <button class="btn btn-sm btn-default add-to-blockchain">Add now to blockchain</button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+          </td>
+          <td colspan="4">
+            Validators: 
+            <ul>
+              <li>Jean Bon (Formateur de la session) : <em>Trop fort ce gars de ouf</em></li>
+            </ul>
+            <button class="btn btn-default">Add a validator</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
 </body>
 </html>

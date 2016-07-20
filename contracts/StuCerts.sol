@@ -17,11 +17,15 @@ contract StuCerts {
     
     address owner;
     Certificate[] certs;
+
+    // Certificate added
+    event certificateCreated(uint certId);
     
     modifier onlyOwner() {
         if (msg.sender != owner) throw;
         _
     }
+
     
     function StuCerts() {
         owner = msg.sender;
@@ -70,7 +74,7 @@ contract StuCerts {
     /**
      * Add a certificate to our database.
      */
-    function addCertificate(string firstName, string lastName, string trainingTitle, uint trainingDate, uint trainingDuration) onlyOwner returns(uint certId) {
+    function createCertificate(string firstName, string lastName, string trainingTitle, uint trainingDate, uint trainingDuration) onlyOwner returns(uint certId) {
         
         certId = certs.length++;
         certs[certId].firstName = firstName;
@@ -78,8 +82,8 @@ contract StuCerts {
         certs[certId].trainingTitle = trainingTitle;
         certs[certId].trainingDate = trainingDate;
         certs[certId].trainingDuration = trainingDuration;
-        
-        return certId;
+
+        certificateCreated(certId);
     }
     
     /**
