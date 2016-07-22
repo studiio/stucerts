@@ -6,7 +6,9 @@ contract StuCerts {
         string comment;
     }
     
+    enum CertificateState { Active, Revoked }
     struct Certificate {
+        CertificateState state; 
         string firstName;
         string lastName;
         string trainingTitle;
@@ -19,7 +21,7 @@ contract StuCerts {
     Certificate[] certs;
 
     // Certificate added
-    event certificateCreated(uint certId);
+    event certificateCreated(uint certId, uint foreignId);
     
     modifier onlyOwner() {
         if (msg.sender != owner) throw;
@@ -34,9 +36,10 @@ contract StuCerts {
     /**
      * Get a certificate
      */
-    function getCertificate(uint certId) constant returns(string firstName, string lastName, string trainingTitle, uint trainingDate, uint trainingDuration) {
-        
+    function getCertificate(uint certId) constant returns(CertificateState status, string firstName, string lastName, string trainingTitle, uint trainingDate, uint trainingDuration) {
+
         return (
+            certs[certId].state,
             certs[certId].firstName,
             certs[certId].lastName,
             certs[certId].trainingTitle,
@@ -73,17 +76,31 @@ contract StuCerts {
     
     /**
      * Add a certificate to our database.
+     * The foreign key is optional and is only used to be passed back in the event, to be able to link this certificate
+     * to a foreign entity.
      */
-    function createCertificate(string firstName, string lastName, string trainingTitle, uint trainingDate, uint trainingDuration) onlyOwner returns(uint certId) {
+    function createCertificate(string firstName, string lastName, string trainingTitle, uint trainingDate, uint trainingDuration, uint foreignId) onlyOwner returns(uint certId) {
+        
+        if(bytes(firstName).length == 0 || bytes(lastName).length == 0 || bytes(trainingTitle).length == 0) {
+            throw;
+        }
         
         certId = certs.length++;
+        certs[certId].state = CertificateState.Active;
         certs[certId].firstName = firstName;
         certs[certId].lastName = lastName;
         certs[certId].trainingTitle = trainingTitle;
         certs[certId].trainingDate = trainingDate;
         certs[certId].trainingDuration = trainingDuration;
 
-        certificateCreated(certId);
+        certificateCreated(certId, foreignId);
+    }
+    
+    /**
+     * Revoke a certificate
+     */
+    function revokeCertificate(uint certId) onlyOwner {
+        certs[certId].state = CertificateState.Revoked;
     }
     
     /**
