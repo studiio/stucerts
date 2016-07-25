@@ -20,8 +20,13 @@ contract StuCerts {
     address owner;
     Certificate[] certs;
 
-    // Certificate added
+    // Certificate added. foreignId is the foreignId variable given to the createCertificate call
     event certificateCreated(uint certId, uint foreignId);
+    // Certificate revoked
+    event certificateRevoked(uint certId);
+    // Certificate validator added. 
+    // foreignValidatorId is the foreignValidatorId variable given to the addCertificateValidator call
+    event certificateValidatorAdded(uint certId, uint validatorId, uint foreignValidatorId);
     
     modifier onlyOwner() {
         if (msg.sender != owner) throw;
@@ -101,12 +106,14 @@ contract StuCerts {
      */
     function revokeCertificate(uint certId) onlyOwner {
         certs[certId].state = CertificateState.Revoked;
+
+        certificateRevoked(certId);
     }
     
     /**
      * Add a person validating a certificate
      */
-    function addCertificateValidator(uint certId, string validatorFirstName, string validatorLastName, string validatorTitle, string validatorComment) onlyOwner returns(uint validatorId) {
+    function addCertificateValidator(uint certId, string validatorFirstName, string validatorLastName, string validatorTitle, string validatorComment, uint foreignValidatorId) onlyOwner returns(uint validatorId) {
         
         validatorId = certs[certId].validators.length++;
         
@@ -115,7 +122,7 @@ contract StuCerts {
         certs[certId].validators[validatorId].title = validatorTitle;
         certs[certId].validators[validatorId].comment = validatorComment;
         
-        return validatorId;
+        certificateValidatorAdded(certId, validatorId, foreignValidatorId);
     }
     
     
