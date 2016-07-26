@@ -1,4 +1,4 @@
-contract StuCerts {
+contract StudiioCertificates {
     struct Validator {
         string firstName;
         string lastName;
@@ -17,9 +17,9 @@ contract StuCerts {
         Validator[] validators;
     }
     
-    address owner;
+    address creator;
     mapping (address => bool) admins;
-    Certificate[] certs;
+    Certificate[] certificates;
 
     // Certificate added. foreignId is the foreignId variable given to the createCertificate call
     event certificateCreated(uint certId, uint foreignId);
@@ -29,8 +29,8 @@ contract StuCerts {
     // foreignValidatorId is the foreignValidatorId variable given to the addCertificateValidator call
     event certificateValidatorAdded(uint certId, uint validatorId, uint foreignValidatorId);
     
-    modifier onlyOwner() {
-        if (msg.sender != owner) throw;
+    modifier onlyCreator() {
+        if (msg.sender != creator) throw;
         _
     }
 
@@ -41,8 +41,8 @@ contract StuCerts {
 
     
     function StuCerts() {
-        owner = msg.sender;
-        admins[owner] = true;
+        creator = msg.sender;
+        admins[creator] = true;
     }
     
     /**
@@ -51,12 +51,12 @@ contract StuCerts {
     function getCertificate(uint certId) constant returns(CertificateState status, string firstName, string lastName, string trainingTitle, uint trainingDate, uint trainingDuration) {
 
         return (
-            certs[certId].state,
-            certs[certId].firstName,
-            certs[certId].lastName,
-            certs[certId].trainingTitle,
-            certs[certId].trainingDate,
-            certs[certId].trainingDuration
+            certificates[certId].state,
+            certificates[certId].firstName,
+            certificates[certId].lastName,
+            certificates[certId].trainingTitle,
+            certificates[certId].trainingDate,
+            certificates[certId].trainingDuration
         );
     }
     
@@ -64,14 +64,14 @@ contract StuCerts {
      * Get the certificate count
      */
     function getCertificateCount() constant returns(uint count) {
-        count = certs.length;
+        count = certificates.length;
     }
     
     /**
      * Get a count of validators for a given certificate
      */
     function getCertificateValidatorCount(uint certId) constant returns(uint count) {
-        count = certs[certId].validators.length;
+        count = certificates[certId].validators.length;
     }
     
     /**
@@ -79,10 +79,10 @@ contract StuCerts {
      */
     function getCertificateValidator(uint certId, uint validatorId) constant returns(string firstName, string lastName, string title, string comment) {
         return (
-            certs[certId].validators[validatorId].firstName, 
-            certs[certId].validators[validatorId].lastName,
-            certs[certId].validators[validatorId].title,
-            certs[certId].validators[validatorId].comment
+            certificates[certId].validators[validatorId].firstName, 
+            certificates[certId].validators[validatorId].lastName,
+            certificates[certId].validators[validatorId].title,
+            certificates[certId].validators[validatorId].comment
         );
     }
     
@@ -97,13 +97,13 @@ contract StuCerts {
             throw;
         }
         
-        certId = certs.length++;
-        certs[certId].state = CertificateState.Active;
-        certs[certId].firstName = firstName;
-        certs[certId].lastName = lastName;
-        certs[certId].trainingTitle = trainingTitle;
-        certs[certId].trainingDate = trainingDate;
-        certs[certId].trainingDuration = trainingDuration;
+        certId = certificates.length++;
+        certificates[certId].state = CertificateState.Active;
+        certificates[certId].firstName = firstName;
+        certificates[certId].lastName = lastName;
+        certificates[certId].trainingTitle = trainingTitle;
+        certificates[certId].trainingDate = trainingDate;
+        certificates[certId].trainingDuration = trainingDuration;
 
         certificateCreated(certId, foreignId);
     }
@@ -112,7 +112,7 @@ contract StuCerts {
      * Revoke a certificate
      */
     function revokeCertificate(uint certId) onlyAdmins {
-        certs[certId].state = CertificateState.Revoked;
+        certificates[certId].state = CertificateState.Revoked;
 
         certificateRevoked(certId);
     }
@@ -122,12 +122,12 @@ contract StuCerts {
      */
     function addCertificateValidator(uint certId, string validatorFirstName, string validatorLastName, string validatorTitle, string validatorComment, uint foreignValidatorId) onlyAdmins returns(uint validatorId) {
         
-        validatorId = certs[certId].validators.length++;
+        validatorId = certificates[certId].validators.length++;
         
-        certs[certId].validators[validatorId].firstName = validatorFirstName;
-        certs[certId].validators[validatorId].lastName = validatorLastName;
-        certs[certId].validators[validatorId].title = validatorTitle;
-        certs[certId].validators[validatorId].comment = validatorComment;
+        certificates[certId].validators[validatorId].firstName = validatorFirstName;
+        certificates[certId].validators[validatorId].lastName = validatorLastName;
+        certificates[certId].validators[validatorId].title = validatorTitle;
+        certificates[certId].validators[validatorId].comment = validatorComment;
         
         certificateValidatorAdded(certId, validatorId, foreignValidatorId);
     }
@@ -136,7 +136,7 @@ contract StuCerts {
     /**
      * Change admins : Authorize or not an address to do changes
      */
-    function changeAllowedRecipients(address person, bool allowed) onlyOwner {
+    function changeAllowedRecipients(address person, bool allowed) onlyCreator {
         admins[person] = allowed;
     }
 }
