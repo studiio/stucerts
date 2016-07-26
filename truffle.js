@@ -10,7 +10,7 @@ module.exports = {
     "images/": "images/"
   },
   deploy: [
-    "StuCerts"
+    "StudiioCertificates"
   ],
   rpc: {
     host: "localhost",
