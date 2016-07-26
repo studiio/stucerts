@@ -18,6 +18,7 @@ contract StuCerts {
     }
     
     address owner;
+    mapping (address => bool) admins;
     Certificate[] certs;
 
     // Certificate added. foreignId is the foreignId variable given to the createCertificate call
@@ -33,9 +34,15 @@ contract StuCerts {
         _
     }
 
+    modifier onlyAdmins() {
+        if (admins[msg.sender] == false) throw;
+        _
+    }
+
     
     function StuCerts() {
         owner = msg.sender;
+        admins[owner] = true;
     }
     
     /**
@@ -84,7 +91,7 @@ contract StuCerts {
      * The foreign key is optional and is only used to be passed back in the event, to be able to link this certificate
      * to a foreign entity.
      */
-    function createCertificate(string firstName, string lastName, string trainingTitle, uint trainingDate, uint trainingDuration, uint foreignId) onlyOwner returns(uint certId) {
+    function createCertificate(string firstName, string lastName, string trainingTitle, uint trainingDate, uint trainingDuration, uint foreignId) onlyAdmins returns(uint certId) {
         
         if(bytes(firstName).length == 0 || bytes(lastName).length == 0 || bytes(trainingTitle).length == 0) {
             throw;
@@ -104,7 +111,7 @@ contract StuCerts {
     /**
      * Revoke a certificate
      */
-    function revokeCertificate(uint certId) onlyOwner {
+    function revokeCertificate(uint certId) onlyAdmins {
         certs[certId].state = CertificateState.Revoked;
 
         certificateRevoked(certId);
@@ -113,7 +120,7 @@ contract StuCerts {
     /**
      * Add a person validating a certificate
      */
-    function addCertificateValidator(uint certId, string validatorFirstName, string validatorLastName, string validatorTitle, string validatorComment, uint foreignValidatorId) onlyOwner returns(uint validatorId) {
+    function addCertificateValidator(uint certId, string validatorFirstName, string validatorLastName, string validatorTitle, string validatorComment, uint foreignValidatorId) onlyAdmins returns(uint validatorId) {
         
         validatorId = certs[certId].validators.length++;
         
@@ -126,4 +133,10 @@ contract StuCerts {
     }
     
     
+    /**
+     * Change admins : Authorize or not an address to do changes
+     */
+    function changeAllowedRecipients(address person, bool allowed) onlyOwner {
+        admins[person] = allowed;
+    }
 }
