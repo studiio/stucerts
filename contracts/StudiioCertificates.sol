@@ -40,7 +40,7 @@ contract StudiioCertificates {
     }
 
     
-    function StuCerts() {
+    function StudiioCertificates() {
         creator = msg.sender;
         admins[creator] = true;
     }
